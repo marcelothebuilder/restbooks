@@ -35,9 +35,12 @@ public class LivrosController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public void salvar(@RequestBody Livro livro) {
-		
-		System.out.println(livro);
-		
+		livros.salvar(livro);
+	}
+	
+	@RequestMapping(value="/{codigo}", method = RequestMethod.PUT)
+	public void atualizar(@RequestBody Livro livro, @PathVariable("codigo") Long codigo) {
+		livro.setCodigo(codigo);
 		livros.salvar(livro);
 	}
 	
@@ -48,9 +51,7 @@ public class LivrosController {
 	
 	@RequestMapping(value="/{codigo}", method = RequestMethod.DELETE)
 	public void deletar(@PathVariable("codigo") Long codigo){
-		System.out.println("Deletando livro");
 		livros.deletar(codigo);
-		System.out.println("Deletado");
 	}
 
 }

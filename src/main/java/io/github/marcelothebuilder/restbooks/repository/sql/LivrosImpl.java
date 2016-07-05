@@ -73,6 +73,21 @@ public class LivrosImpl implements Livros {
 
 	@Override
 	public Livro salvar(Livro livro) {
+		if (livro.hasCodigo()) {
+			return this.atualizar(livro);
+		} else {
+			return this.salvarNovo(livro);
+		}
+	}
+	
+	private Livro atualizar(Livro livro) {
+		LivroRecord record = LivrosImpl.asRecord(livro);
+		dsl.attach(record);
+		record.update();
+		return LivrosImpl.asDomain(record);
+	}
+
+	private Livro salvarNovo(Livro livro) {
 		LivroRecord record = LivrosImpl.asRecord(livro);
 		
 		record = dsl.insertInto(LIVRO,
