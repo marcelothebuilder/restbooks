@@ -40,6 +40,10 @@ public @Data class Livro {
 		this.comentarios = comentarios;
 		this.autor = autor;
 	}
+	
+	public boolean hasCodigo() {
+		return this.codigo != null;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
