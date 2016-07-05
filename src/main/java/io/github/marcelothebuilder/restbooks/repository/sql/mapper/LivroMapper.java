@@ -49,10 +49,12 @@ public class LivroMapper implements RecordMapper<Record, Livro> {
 		
 		this.livros.add(livro);
 		
-		// get fresh livro from set
-		Livro freshLivro = livros.stream().filter(l -> l.equals(livro)).findFirst().get();
-		
-		freshLivro.getComentarios().add(comentario);
+		if (comentario.hasCodigo()) {
+			// get fresh livro from set
+			Livro freshLivro = livros.stream().filter(l -> l.equals(livro)).findFirst().get();
+			
+			freshLivro.getComentarios().add(comentario);
+		}
 		
 		return livro;
 	}
