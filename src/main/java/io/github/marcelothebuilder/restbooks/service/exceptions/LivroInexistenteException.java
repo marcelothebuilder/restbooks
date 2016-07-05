@@ -1,4 +1,4 @@
-package io.github.marcelothebuilder.restbooks.repository;
+package io.github.marcelothebuilder.restbooks.service.exceptions;
 
 public class LivroInexistenteException extends Exception {
 	private static final long serialVersionUID = -5211458355263395509L;

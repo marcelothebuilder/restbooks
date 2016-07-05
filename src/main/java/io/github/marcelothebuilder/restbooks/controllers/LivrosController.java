@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import io.github.marcelothebuilder.restbooks.domain.Livro;
-import io.github.marcelothebuilder.restbooks.repository.LivroInexistenteException;
-import io.github.marcelothebuilder.restbooks.repository.Livros;
+import io.github.marcelothebuilder.restbooks.service.LivrosService;
+import io.github.marcelothebuilder.restbooks.service.exceptions.LivroInexistenteException;
 
 /**
  * Controller que fornece o resource de Livros.
@@ -27,52 +27,52 @@ import io.github.marcelothebuilder.restbooks.repository.Livros;
 @RestController
 @RequestMapping("/livros")
 public class LivrosController {
-	
+
 	@Autowired
-	private Livros livros;
-	
+	private LivrosService livrosService;
+
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<List<Livro>> listar() {
-		List<Livro> todosLivros = livros.todos();
+		List<Livro> todosLivros = livrosService.listar();
 		return ResponseEntity.status(HttpStatus.OK).body(todosLivros);
 	}
-	
+
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Void> salvar(@RequestBody Livro livro) {
-	Livro livroCriado = livros.salvar(livro);
+		Livro livroCriado = livrosService.salvar(livro);
 
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-				.path("/{id}")
-				.buildAndExpand(livroCriado.getCodigo())
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(livroCriado.getCodigo())
 				.toUri();
-		
+
 		return ResponseEntity.created(uri).build();
 	}
-	
-	@RequestMapping(value="/{codigo}", method = RequestMethod.PUT)
+
+	@RequestMapping(value = "/{codigo}", method = RequestMethod.PUT)
 	public ResponseEntity<Void> atualizar(@RequestBody Livro livro, @PathVariable("codigo") Long codigo) {
 		livro.setCodigo(codigo);
-		livros.salvar(livro);
-		
-		return ResponseEntity.noContent().build();
+		try {
+			livrosService.atualizar(livro);
+			return ResponseEntity.noContent().build();
+		} catch (LivroInexistenteException e) {
+			return ResponseEntity.notFound().build();
+		}
 	}
-	
-	@RequestMapping(value="/{codigo}", method = RequestMethod.GET)
+
+	@RequestMapping(value = "/{codigo}", method = RequestMethod.GET)
 	public ResponseEntity<?> buscar(@PathVariable("codigo") Long codigo) {
-		Livro livro = livros.buscar(codigo);
-		
-		if (livro == null) {
+		try {
+			Livro livro = livrosService.buscar(codigo);
+			return ResponseEntity.status(HttpStatus.OK).body(livro);
+		} catch (LivroInexistenteException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
-		
-		return ResponseEntity.status(HttpStatus.OK).body(livro);
 	}
-	
-	@RequestMapping(value="/{codigo}", method = RequestMethod.DELETE)
-	public ResponseEntity<Void> deletar(@PathVariable("codigo") Long codigo){
+
+	@RequestMapping(value = "/{codigo}", method = RequestMethod.DELETE)
+	public ResponseEntity<Void> deletar(@PathVariable("codigo") Long codigo) {
 		try {
-			livros.deletar(codigo);
+			livrosService.deletar(codigo);
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 		} catch (LivroInexistenteException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
