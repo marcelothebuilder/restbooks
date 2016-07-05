@@ -18,13 +18,14 @@ import io.github.marcelothebuilder.restbooks.repository.Livros;
  *
  */
 @RestController
+@RequestMapping("/livros")
 public class LivrosController {
 	
 	@Autowired
 	private Livros livros;
 	
 
-	@RequestMapping(value = "/livros", method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
 	public List<Livro> listar() {
 		return livros.todos();
