@@ -41,42 +41,29 @@ public class LivrosController {
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Void> salvar(@RequestBody Livro livro) {
 		Livro livroCriado = livrosService.salvar(livro);
-
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(livroCriado.getCodigo())
 				.toUri();
-
 		return ResponseEntity.created(uri).build();
 	}
 
 	@RequestMapping(value = "/{codigo}", method = RequestMethod.PUT)
-	public ResponseEntity<Void> atualizar(@RequestBody Livro livro, @PathVariable("codigo") Long codigo) {
+	public ResponseEntity<Void> atualizar(@RequestBody Livro livro, @PathVariable("codigo") Long codigo)
+			throws LivroInexistenteException {
 		livro.setCodigo(codigo);
-		try {
-			livrosService.atualizar(livro);
-			return ResponseEntity.noContent().build();
-		} catch (LivroInexistenteException e) {
-			return ResponseEntity.notFound().build();
-		}
+		livrosService.atualizar(livro);
+		return ResponseEntity.noContent().build();
 	}
 
 	@RequestMapping(value = "/{codigo}", method = RequestMethod.GET)
-	public ResponseEntity<?> buscar(@PathVariable("codigo") Long codigo) {
-		try {
-			Livro livro = livrosService.buscar(codigo);
-			return ResponseEntity.status(HttpStatus.OK).body(livro);
-		} catch (LivroInexistenteException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
+	public ResponseEntity<Livro> buscar(@PathVariable("codigo") Long codigo) throws LivroInexistenteException {
+		Livro livro = livrosService.buscar(codigo);
+		return ResponseEntity.status(HttpStatus.OK).body(livro);
 	}
 
 	@RequestMapping(value = "/{codigo}", method = RequestMethod.DELETE)
-	public ResponseEntity<Void> deletar(@PathVariable("codigo") Long codigo) {
-		try {
-			livrosService.deletar(codigo);
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-		} catch (LivroInexistenteException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
+	public ResponseEntity<Void> deletar(@PathVariable("codigo") Long codigo) throws LivroInexistenteException {
+		livrosService.deletar(codigo);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 
 }
