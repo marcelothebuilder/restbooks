@@ -14,7 +14,6 @@ import org.jooq.DSLContext;
 import org.jooq.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import io.github.marcelothebuilder.restbooks.domain.Livro;
 import io.github.marcelothebuilder.restbooks.jooq.tables.records.LivroRecord;
 import io.github.marcelothebuilder.restbooks.repository.Livros;
@@ -25,6 +24,37 @@ public class LivrosImpl implements Livros {
 
 	@Autowired
 	private DSLContext dsl;
+	
+	@Override
+	public Livro buscar(Long codigo) {
+		// receberá apenas um livro
+		Set<Livro> livros = new HashSet<>();
+		
+		dsl.select(LIVRO.fields())
+			.select(COMENTARIO.fields())
+			.from(LIVRO)
+			.join(COMENTARIO, JoinType.LEFT_OUTER_JOIN)
+			.on(COMENTARIO.CODIGO_LIVRO.eq(LIVRO.CODIGO))
+			.where(LIVRO.CODIGO.eq(codigo))
+			.fetch(new LivroMapper(livros));
+		
+		if (livros.isEmpty()) { 
+			return null;
+		}
+		
+		return livros.iterator().next();
+	}
+	
+	@Override
+	public void deletar(Long id) {
+		dsl.deleteFrom(COMENTARIO)
+			.where(COMENTARIO.CODIGO_LIVRO.eq(id))
+			.execute();
+		
+		dsl.deleteFrom(LIVRO)
+			.where(LIVRO.CODIGO.eq(id))
+			.execute();
+	}
 	
 	@Override
 	public List<Livro> todos() {

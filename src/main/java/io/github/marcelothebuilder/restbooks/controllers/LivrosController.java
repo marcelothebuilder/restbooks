@@ -3,6 +3,7 @@ package io.github.marcelothebuilder.restbooks.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,6 +39,18 @@ public class LivrosController {
 		System.out.println(livro);
 		
 		livros.salvar(livro);
+	}
+	
+	@RequestMapping(value="/{codigo}", method = RequestMethod.GET)
+	public Livro buscar(@PathVariable("codigo") Long codigo) {
+		return livros.buscar(codigo);
+	}
+	
+	@RequestMapping(value="/{codigo}", method = RequestMethod.DELETE)
+	public void deletar(@PathVariable("codigo") Long codigo){
+		System.out.println("Deletando livro");
+		livros.deletar(codigo);
+		System.out.println("Deletado");
 	}
 
 }
