@@ -11,9 +11,15 @@ public @Data class Comentario {
 	private Long codigoLivro;
 	private String autor;
 	private String conteudo;
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
+	
+	/**
+	 * Verifica se o Comentario tem um código.
+	 * @return true caso <tt>codigo</tt> seja true.
 	 */
+	public boolean hasCodigo() {
+		return codigo != null;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -30,9 +36,7 @@ public @Data class Comentario {
 			return false;
 		return true;
 	}
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
