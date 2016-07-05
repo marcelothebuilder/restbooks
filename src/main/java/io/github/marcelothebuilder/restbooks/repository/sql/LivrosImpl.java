@@ -12,13 +12,14 @@ import java.util.Set;
 
 import org.jooq.DSLContext;
 import org.jooq.JoinType;
+import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import io.github.marcelothebuilder.restbooks.domain.Livro;
 import io.github.marcelothebuilder.restbooks.jooq.tables.records.LivroRecord;
-import io.github.marcelothebuilder.restbooks.repository.LivroInexistenteException;
 import io.github.marcelothebuilder.restbooks.repository.Livros;
 import io.github.marcelothebuilder.restbooks.repository.sql.mapper.LivroMapper;
+import io.github.marcelothebuilder.restbooks.service.exceptions.LivroInexistenteException;
 
 @Repository
 public class LivrosImpl implements Livros {
@@ -47,7 +48,7 @@ public class LivrosImpl implements Livros {
 	}
 	
 	@Override
-	public void deletar(Long id) throws LivroInexistenteException {
+	public void deletar(Long id) {
 		dsl.deleteFrom(COMENTARIO)
 			.where(COMENTARIO.CODIGO_LIVRO.eq(id))
 			.execute();
@@ -57,7 +58,7 @@ public class LivrosImpl implements Livros {
 			.execute();
 		
 		if (deleted == 0) {
-			throw new LivroInexistenteException(String.format("Livro de código %d não existe", id));
+			throw new DataAccessException(String.format("Livro de código %d não existe", id));
 		}
 	}
 	
