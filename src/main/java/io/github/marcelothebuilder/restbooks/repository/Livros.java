@@ -8,5 +8,5 @@ public interface Livros {
 	List<Livro> todos();
 	Livro salvar(Livro livro);
 	Livro buscar(Long codigo);
-	void deletar(Long codigo);
+	void deletar(Long codigo) throws LivroInexistenteException;
 }

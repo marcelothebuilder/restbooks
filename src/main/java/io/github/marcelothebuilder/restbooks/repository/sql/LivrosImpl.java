@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import io.github.marcelothebuilder.restbooks.domain.Livro;
 import io.github.marcelothebuilder.restbooks.jooq.tables.records.LivroRecord;
+import io.github.marcelothebuilder.restbooks.repository.LivroInexistenteException;
 import io.github.marcelothebuilder.restbooks.repository.Livros;
 import io.github.marcelothebuilder.restbooks.repository.sql.mapper.LivroMapper;
 
@@ -46,14 +47,18 @@ public class LivrosImpl implements Livros {
 	}
 	
 	@Override
-	public void deletar(Long id) {
+	public void deletar(Long id) throws LivroInexistenteException {
 		dsl.deleteFrom(COMENTARIO)
 			.where(COMENTARIO.CODIGO_LIVRO.eq(id))
 			.execute();
 		
-		dsl.deleteFrom(LIVRO)
+		int deleted = dsl.deleteFrom(LIVRO)
 			.where(LIVRO.CODIGO.eq(id))
 			.execute();
+		
+		if (deleted == 0) {
+			throw new LivroInexistenteException(String.format("Livro de código %d não existe", id));
+		}
 	}
 	
 	@Override
