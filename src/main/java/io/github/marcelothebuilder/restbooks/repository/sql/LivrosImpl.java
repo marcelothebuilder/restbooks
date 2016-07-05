@@ -3,16 +3,20 @@ package io.github.marcelothebuilder.restbooks.repository.sql;
 import static io.github.marcelothebuilder.restbooks.jooq.tables.Comentario.COMENTARIO;
 import static io.github.marcelothebuilder.restbooks.jooq.tables.Livro.LIVRO;
 
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.jooq.DSLContext;
+import org.jooq.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import io.github.marcelothebuilder.restbooks.domain.Livro;
+import io.github.marcelothebuilder.restbooks.jooq.tables.records.LivroRecord;
 import io.github.marcelothebuilder.restbooks.repository.Livros;
 import io.github.marcelothebuilder.restbooks.repository.sql.mapper.LivroMapper;
 
@@ -30,11 +34,62 @@ public class LivrosImpl implements Livros {
 		dsl.select(LIVRO.fields())
 			.select(COMENTARIO.fields())
 			.from(LIVRO)
-			.join(COMENTARIO)
+			.join(COMENTARIO, JoinType.LEFT_OUTER_JOIN)
 			.on(COMENTARIO.CODIGO_LIVRO.eq(LIVRO.CODIGO))
 			.fetch(new LivroMapper(livros));
 		
 		return new ArrayList<>(livros);
+	}
+
+	@Override
+	public Livro salvar(Livro livro) {
+		LivroRecord record = LivrosImpl.asRecord(livro);
+		
+		record = dsl.insertInto(LIVRO,
+				LIVRO.AUTOR,
+				LIVRO.EDITORA,
+				LIVRO.NOME,
+				LIVRO.PUBLICACAO,
+				LIVRO.RESUMO)
+		.values(record.getAutor(),
+				record.getEditora(),
+				record.getNome(),
+				record.getPublicacao(),
+				record.getResumo())
+		.returning()
+		.fetchOne();
+		
+		Livro livroReturn = LivrosImpl.asDomain(record);
+		
+		return livroReturn;
+	}
+	
+	protected static LivroRecord asRecord(Livro livro) {
+		Timestamp timestamp = new Timestamp(livro.getPublicacao().getTime());
+		
+		LivroRecord record = new LivroRecord();
+		record.setCodigo(livro.getCodigo());
+		record.setAutor(livro.getAutor());
+		record.setEditora(livro.getEditora());
+		record.setNome(livro.getNome());
+		record.setResumo(livro.getResumo());
+		record.setPublicacao(timestamp);
+		
+		return record;
+	}
+	
+	protected static Livro asDomain(LivroRecord record) {
+		Date date = new Date(record.getPublicacao().getTime());
+		
+		Livro livro = new Livro();
+		livro.setAutor(record.getAutor());
+		livro.setCodigo(record.getCodigo());
+		livro.setEditora(record.getEditora());
+		livro.setNome(record.getNome());
+		livro.setPublicacao(date);
+		livro.setResumo(record.getResumo());
+		
+		return livro;
 	}
 
 }

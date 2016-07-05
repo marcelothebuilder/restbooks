@@ -3,6 +3,7 @@ package io.github.marcelothebuilder.restbooks.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,6 +30,14 @@ public class LivrosController {
 	@ResponseBody
 	public List<Livro> listar() {
 		return livros.todos();
+	}
+	
+	@RequestMapping(method = RequestMethod.POST)
+	public void salvar(@RequestBody Livro livro) {
+		
+		System.out.println(livro);
+		
+		livros.salvar(livro);
 	}
 
 }

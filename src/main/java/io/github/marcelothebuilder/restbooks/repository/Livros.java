@@ -6,4 +6,5 @@ import io.github.marcelothebuilder.restbooks.domain.Livro;
 
 public interface Livros {
 	List<Livro> todos();
+	Livro salvar(Livro livro);
 }
