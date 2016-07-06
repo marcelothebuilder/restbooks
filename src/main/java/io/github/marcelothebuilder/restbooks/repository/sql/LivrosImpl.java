@@ -32,8 +32,7 @@ public class LivrosImpl implements Livros {
 	
 	@Override
 	public Livro buscar(Long codigo) {
-		// receberá apenas um livro
-		Set<Livro> livros = new HashSet<>();
+		Livro livro = new Livro();
 		
 		dsl.select(LIVRO.fields())
 			.select(COMENTARIO.fields())
@@ -41,13 +40,19 @@ public class LivrosImpl implements Livros {
 			.join(COMENTARIO, JoinType.LEFT_OUTER_JOIN)
 			.on(COMENTARIO.CODIGO_LIVRO.eq(LIVRO.CODIGO))
 			.where(LIVRO.CODIGO.eq(codigo))
-			.fetch(new LivroMapper(livros));
+			.fetchInto(r -> {
+				if (!livro.hasCodigo()) {
+					r.into(LIVRO.fields()).into(livro);
+				}
+				
+				Comentario comentario = r.into(COMENTARIO.fields()).into(Comentario.class);
+				
+				if (comentario.hasCodigo()) {
+					livro.getComentarios().add(comentario);
+				}
+			});
 		
-		if (livros.isEmpty()) { 
-			return null;
-		}
-		
-		return livros.iterator().next();
+		return livro.hasCodigo() ? livro : null;
 	}
 	
 	@Override
