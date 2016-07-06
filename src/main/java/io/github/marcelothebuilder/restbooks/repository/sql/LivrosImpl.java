@@ -12,10 +12,13 @@ import java.util.Set;
 
 import org.jooq.DSLContext;
 import org.jooq.JoinType;
+import org.jooq.Record;
+import org.jooq.Result;
 import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import io.github.marcelothebuilder.restbooks.domain.Comentario;
 import io.github.marcelothebuilder.restbooks.domain.Livro;
 import io.github.marcelothebuilder.restbooks.jooq.tables.records.LivroRecord;
 import io.github.marcelothebuilder.restbooks.repository.Livros;
@@ -65,14 +68,33 @@ public class LivrosImpl implements Livros {
 	@Override
 	public List<Livro> todos() {
 		
-		Set<Livro> livros = new HashSet<>();
+		final Set<Livro> livros = new HashSet<>();
 		
 		dsl.select(LIVRO.fields())
 			.select(COMENTARIO.fields())
 			.from(LIVRO)
 			.join(COMENTARIO, JoinType.LEFT_OUTER_JOIN)
 			.on(COMENTARIO.CODIGO_LIVRO.eq(LIVRO.CODIGO))
-			.fetch(new LivroMapper(livros));
+			.fetchInto(r -> {
+				Livro livro = r.into(LIVRO.fields()).into(Livro.class);
+				Comentario comentario = r.into(COMENTARIO.fields()).into(Comentario.class);
+				
+				// livro existe no set, atualiza
+				if (livros.contains(livro)) {
+					final Livro livroCompare = livro; 
+					livro = livros.stream()
+						.filter(l -> livroCompare.equals(l))
+						.findFirst()
+						.get();
+				}
+				
+				// se o comentário é válido, adiciona ao Livro
+				if (comentario.hasCodigo()) {
+					livro.getComentarios().add(comentario);
+				}
+				
+				livros.add(livro);
+			});
 		
 		return new ArrayList<>(livros);
 	}
