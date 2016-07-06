@@ -48,14 +48,11 @@
 			<version>1.16.8</version>
 			<scope>provided</scope>
 		</dependency>
-
-
-
+		
 		<!-- database -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
 		</dependency>
 
 		<!-- jooq -->
