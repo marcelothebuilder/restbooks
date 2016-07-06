@@ -12,8 +12,6 @@ import java.util.Set;
 
 import org.jooq.DSLContext;
 import org.jooq.JoinType;
-import org.jooq.Record;
-import org.jooq.Result;
 import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -22,7 +20,6 @@ import io.github.marcelothebuilder.restbooks.domain.Comentario;
 import io.github.marcelothebuilder.restbooks.domain.Livro;
 import io.github.marcelothebuilder.restbooks.jooq.tables.records.LivroRecord;
 import io.github.marcelothebuilder.restbooks.repository.Livros;
-import io.github.marcelothebuilder.restbooks.repository.sql.mapper.LivroMapper;
 
 @Repository
 public class LivrosImpl implements Livros {
