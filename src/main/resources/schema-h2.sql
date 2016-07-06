@@ -1,7 +1,6 @@
 DROP TABLE IF EXISTS comentario;
 DROP TABLE IF EXISTS livro;
 
-
 CREATE TABLE livro (
 	codigo BIGINT NOT NULL AUTO_INCREMENT,
 	nome VARCHAR(100) NOT NULL,
@@ -17,6 +16,7 @@ CREATE TABLE comentario (
 	codigo_livro BIGINT NOT NULL,
 	autor VARCHAR(100) NOT NULL,
 	conteudo VARCHAR(1000) NOT NULL,
+	data DATE NOT NULL DEFAULT NOW(),
 	PRIMARY KEY (codigo),
 	FOREIGN KEY (codigo_livro) REFERENCES livro (codigo)
 );

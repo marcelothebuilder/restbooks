@@ -5,6 +5,7 @@ package io.github.marcelothebuilder.restbooks.jooq.tables.pojos;
 
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -22,12 +23,13 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Comentario implements Serializable {
 
-	private static final long serialVersionUID = 425020130;
+	private static final long serialVersionUID = 825334063;
 
-	private Long   codigo;
-	private Long   codigoLivro;
-	private String autor;
-	private String conteudo;
+	private Long      codigo;
+	private Long      codigoLivro;
+	private String    autor;
+	private String    conteudo;
+	private Timestamp data;
 
 	public Comentario() {}
 
@@ -36,18 +38,21 @@ public class Comentario implements Serializable {
 		this.codigoLivro = value.codigoLivro;
 		this.autor = value.autor;
 		this.conteudo = value.conteudo;
+		this.data = value.data;
 	}
 
 	public Comentario(
-		Long   codigo,
-		Long   codigoLivro,
-		String autor,
-		String conteudo
+		Long      codigo,
+		Long      codigoLivro,
+		String    autor,
+		String    conteudo,
+		Timestamp data
 	) {
 		this.codigo = codigo;
 		this.codigoLivro = codigoLivro;
 		this.autor = autor;
 		this.conteudo = conteudo;
+		this.data = data;
 	}
 
 	public Long getCodigo() {
@@ -82,6 +87,14 @@ public class Comentario implements Serializable {
 		this.conteudo = conteudo;
 	}
 
+	public Timestamp getData() {
+		return this.data;
+	}
+
+	public void setData(Timestamp data) {
+		this.data = data;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder("Comentario (");
@@ -90,6 +103,7 @@ public class Comentario implements Serializable {
 		sb.append(", ").append(codigoLivro);
 		sb.append(", ").append(autor);
 		sb.append(", ").append(conteudo);
+		sb.append(", ").append(data);
 
 		sb.append(")");
 		return sb.toString();

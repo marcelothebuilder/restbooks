@@ -8,6 +8,7 @@ import io.github.marcelothebuilder.restbooks.jooq.Keys;
 import io.github.marcelothebuilder.restbooks.jooq.Public;
 import io.github.marcelothebuilder.restbooks.jooq.tables.records.ComentarioRecord;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import org.jooq.Identity;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
+import org.jooq.impl.DateAsTimestampBinding;
 import org.jooq.impl.TableImpl;
 
 
@@ -35,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Comentario extends TableImpl<ComentarioRecord> {
 
-	private static final long serialVersionUID = -823393305;
+	private static final long serialVersionUID = -1503058006;
 
 	/**
 	 * The reference instance of <code>PUBLIC.COMENTARIO</code>
@@ -69,6 +71,11 @@ public class Comentario extends TableImpl<ComentarioRecord> {
 	 * The column <code>PUBLIC.COMENTARIO.CONTEUDO</code>.
 	 */
 	public final TableField<ComentarioRecord, String> CONTEUDO = createField("CONTEUDO", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false), this, "");
+
+	/**
+	 * The column <code>PUBLIC.COMENTARIO.DATA</code>.
+	 */
+	public final TableField<ComentarioRecord, Timestamp> DATA = createField("DATA", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "", new DateAsTimestampBinding());
 
 	/**
 	 * Create a <code>PUBLIC.COMENTARIO</code> table reference
