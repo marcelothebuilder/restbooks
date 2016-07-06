@@ -1,5 +1,9 @@
 package io.github.marcelothebuilder.restbooks.domain;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 
 /**
@@ -11,6 +15,8 @@ public @Data class Comentario {
 	private Long codigoLivro;
 	private String autor;
 	private String conteudo;
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy HH:mm:ss", timezone="GMT-3")
+	private Date data;
 	
 	/**
 	 * Verifica se o Comentario tem um código.

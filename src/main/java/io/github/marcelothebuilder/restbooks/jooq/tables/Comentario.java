@@ -20,7 +20,6 @@ import org.jooq.Identity;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
-import org.jooq.impl.DateAsTimestampBinding;
 import org.jooq.impl.TableImpl;
 
 
@@ -37,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Comentario extends TableImpl<ComentarioRecord> {
 
-	private static final long serialVersionUID = -1503058006;
+	private static final long serialVersionUID = -1104564616;
 
 	/**
 	 * The reference instance of <code>PUBLIC.COMENTARIO</code>
@@ -75,7 +74,7 @@ public class Comentario extends TableImpl<ComentarioRecord> {
 	/**
 	 * The column <code>PUBLIC.COMENTARIO.DATA</code>.
 	 */
-	public final TableField<ComentarioRecord, Timestamp> DATA = createField("DATA", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "", new DateAsTimestampBinding());
+	public final TableField<ComentarioRecord, Timestamp> DATA = createField("DATA", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
 	 * Create a <code>PUBLIC.COMENTARIO</code> table reference

@@ -16,7 +16,7 @@ CREATE TABLE comentario (
 	codigo_livro BIGINT NOT NULL,
 	autor VARCHAR(100) NOT NULL,
 	conteudo VARCHAR(1000) NOT NULL,
-	data DATE NOT NULL DEFAULT NOW(),
+	data TIMESTAMP NOT NULL DEFAULT NOW(),
 	PRIMARY KEY (codigo),
 	FOREIGN KEY (codigo_livro) REFERENCES livro (codigo)
 );
