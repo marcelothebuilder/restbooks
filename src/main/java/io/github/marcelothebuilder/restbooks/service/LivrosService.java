@@ -6,6 +6,7 @@ import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.github.marcelothebuilder.restbooks.domain.Comentario;
 import io.github.marcelothebuilder.restbooks.domain.Livro;
 import io.github.marcelothebuilder.restbooks.repository.Comentarios;
 import io.github.marcelothebuilder.restbooks.repository.Livros;
@@ -53,6 +54,14 @@ public class LivrosService {
 		if (livroNaoExiste) {
 			throw new LivroInexistenteException(String.format("Livro de código %d não existe.", livro.getCodigo()));
 		}
+	}
+	
+	public Comentario salvarComentario(Long codigoLivro, Comentario comentario) throws LivroInexistenteException {
+		if (!this.verificarExistencia(codigoLivro)) {
+			throw new LivroInexistenteException(String.format("Livro de código %d não existe", codigoLivro));
+		}
+		
+		return comentarios.salvar(comentario);
 	}
 	
 	private boolean verificarExistencia(Livro livro) {
