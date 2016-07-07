@@ -61,6 +61,8 @@ public class LivrosService {
 			throw new LivroInexistenteException(String.format("Livro de código %d não existe", codigoLivro));
 		}
 		
+		comentario.setCodigoLivro(codigoLivro);
+		
 		return comentarios.salvar(comentario);
 	}
 	
