@@ -3,8 +3,6 @@ package io.github.marcelothebuilder.restbooks.repository.sql;
 import static io.github.marcelothebuilder.restbooks.jooq.tables.Comentario.COMENTARIO;
 import static io.github.marcelothebuilder.restbooks.jooq.tables.Livro.LIVRO;
 
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
