@@ -47,6 +47,7 @@ public class LivrosImpl implements Livros {
 				
 				if (comentario.hasCodigo()) {
 					livro.getComentarios().add(comentario);
+					comentario.setLivro(livro);
 				}
 			});
 		
@@ -94,6 +95,7 @@ public class LivrosImpl implements Livros {
 				// se o comentário é válido, adiciona ao Livro
 				if (comentario.hasCodigo()) {
 					livro.getComentarios().add(comentario);
+					comentario.setLivro(livro);
 				}
 				
 				livros.add(livro);

@@ -3,6 +3,7 @@ package io.github.marcelothebuilder.restbooks.domain;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
@@ -17,6 +18,9 @@ public @Data class Comentario {
 	private String conteudo;
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy HH:mm:ss", timezone="GMT-3")
 	private Date data;
+	
+	@JsonIgnore
+	private Livro livro;
 	
 	/**
 	 * Verifica se o Comentario tem um código.
