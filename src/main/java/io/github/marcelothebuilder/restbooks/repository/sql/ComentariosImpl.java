@@ -2,12 +2,14 @@ package io.github.marcelothebuilder.restbooks.repository.sql;
 
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import io.github.marcelothebuilder.restbooks.domain.Comentario;
 import io.github.marcelothebuilder.restbooks.jooq.tables.records.ComentarioRecord;
 import io.github.marcelothebuilder.restbooks.repository.Comentarios;
 import io.github.marcelothebuilder.restbooks.util.PojoUtils;
 
+@Repository
 public class ComentariosImpl implements Comentarios {
 
 	@Autowired
