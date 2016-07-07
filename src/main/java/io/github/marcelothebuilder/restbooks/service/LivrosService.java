@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.github.marcelothebuilder.restbooks.domain.Livro;
+import io.github.marcelothebuilder.restbooks.repository.Comentarios;
 import io.github.marcelothebuilder.restbooks.repository.Livros;
 import io.github.marcelothebuilder.restbooks.service.exceptions.LivroInexistenteException;
 
@@ -15,6 +16,9 @@ public class LivrosService {
 
 	@Autowired
 	private Livros livros;
+	
+	@Autowired
+	private Comentarios comentarios;
 	
 	public List<Livro> listar() {
 		return livros.todos();
@@ -52,8 +56,12 @@ public class LivrosService {
 	}
 	
 	private boolean verificarExistencia(Livro livro) {
+		return this.verificarExistencia(livro.getCodigo());
+	}
+	
+	private boolean verificarExistencia(Long codigoLivro) {
 		try {
-			this.buscar(livro.getCodigo());
+			this.buscar(codigoLivro);
 			return true;
 		} catch (LivroInexistenteException e) {
 			return false;
