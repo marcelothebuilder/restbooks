@@ -1,5 +1,9 @@
 package io.github.marcelothebuilder.restbooks.repository.sql;
 
+import static io.github.marcelothebuilder.restbooks.jooq.tables.Comentario.COMENTARIO;
+
+import java.util.List;
+
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -28,6 +32,15 @@ public class ComentariosImpl implements Comentarios {
 		}
 		
 		return PojoUtils.copyProperties(record, Comentario.class);
+	}
+
+	@Override
+	public List<Comentario> buscarPorCodigoLivro(Long codigoLivro) {
+		List<Comentario> comentarios = dsl.select(COMENTARIO.fields())
+				.from(COMENTARIO)
+				.where(COMENTARIO.CODIGO_LIVRO.eq(codigoLivro))
+				.fetchInto(Comentario.class);
+		return comentarios;
 	}
 
 	

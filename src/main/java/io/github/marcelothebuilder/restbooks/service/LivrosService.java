@@ -66,6 +66,16 @@ public class LivrosService {
 		return comentarios.salvar(comentario);
 	}
 	
+	public List<Comentario> listarComentarios(Long codigoLivro) throws LivroInexistenteException {
+		if (!this.verificarExistencia(codigoLivro)) {
+			throw new LivroInexistenteException(String.format("Livro de código %d não existe", codigoLivro));
+		}
+		
+		List<Comentario> comentariosList = comentarios.buscarPorCodigoLivro(codigoLivro);
+		
+		return comentariosList;
+	}
+	
 	private boolean verificarExistencia(Livro livro) {
 		return this.verificarExistencia(livro.getCodigo());
 	}
@@ -78,5 +88,7 @@ public class LivrosService {
 			return false;
 		}
 	}
+
+	
 	
 }

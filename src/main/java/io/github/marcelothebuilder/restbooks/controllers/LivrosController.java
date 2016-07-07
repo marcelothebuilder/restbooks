@@ -77,5 +77,13 @@ public class LivrosController {
 
 		return ResponseEntity.created(uri).build();
 	}
+	
+	@RequestMapping(value = "/{id}/comentarios", method = RequestMethod.GET)
+	public ResponseEntity<List<Comentario>> listarComentarios(@PathVariable("id") Long codigoLivro) throws LivroInexistenteException {
+
+		List<Comentario> comentarios = livrosService.listarComentarios(codigoLivro);
+
+		return ResponseEntity.ok(comentarios);
+	}
 
 }
