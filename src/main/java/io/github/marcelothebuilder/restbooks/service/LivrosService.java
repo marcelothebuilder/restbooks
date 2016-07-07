@@ -48,12 +48,14 @@ public class LivrosService {
 		}
 	}
 	
-	public void atualizar(Livro livro) throws LivroInexistenteException {
+	public Livro atualizar(Livro livro) throws LivroInexistenteException {
 		boolean livroNaoExiste = !this.verificarExistencia(livro);
 		
 		if (livroNaoExiste) {
 			throw new LivroInexistenteException(String.format("Livro de código %d não existe.", livro.getCodigo()));
 		}
+		
+		return livros.salvar(livro);
 	}
 	
 	public Comentario salvarComentario(Long codigoLivro, Comentario comentario) throws LivroInexistenteException {
