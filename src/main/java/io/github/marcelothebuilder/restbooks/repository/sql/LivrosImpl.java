@@ -20,6 +20,7 @@ import io.github.marcelothebuilder.restbooks.domain.Comentario;
 import io.github.marcelothebuilder.restbooks.domain.Livro;
 import io.github.marcelothebuilder.restbooks.jooq.tables.records.LivroRecord;
 import io.github.marcelothebuilder.restbooks.repository.Livros;
+import io.github.marcelothebuilder.restbooks.util.DateUtils;
 
 @Repository
 public class LivrosImpl implements Livros {
@@ -140,28 +141,24 @@ public class LivrosImpl implements Livros {
 	}
 	
 	protected static LivroRecord asRecord(Livro livro) {
-		Timestamp timestamp = new Timestamp(livro.getPublicacao().getTime());
-		
 		LivroRecord record = new LivroRecord();
 		record.setCodigo(livro.getCodigo());
 		record.setAutor(livro.getAutor());
 		record.setEditora(livro.getEditora());
 		record.setNome(livro.getNome());
 		record.setResumo(livro.getResumo());
-		record.setPublicacao(timestamp);
+		record.setPublicacao( DateUtils.toTimestamp( livro.getPublicacao() ) );
 		
 		return record;
 	}
 	
 	protected static Livro asDomain(LivroRecord record) {
-		Date date = new Date(record.getPublicacao().getTime());
-		
 		Livro livro = new Livro();
 		livro.setAutor(record.getAutor());
 		livro.setCodigo(record.getCodigo());
 		livro.setEditora(record.getEditora());
 		livro.setNome(record.getNome());
-		livro.setPublicacao(date);
+		livro.setPublicacao( DateUtils.toDate( record.getPublicacao() ) );
 		livro.setResumo(record.getResumo());
 		
 		return livro;
