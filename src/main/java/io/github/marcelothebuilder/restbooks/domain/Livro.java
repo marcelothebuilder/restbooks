@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 
 /**
@@ -15,6 +17,8 @@ import lombok.Data;
 public @Data class Livro {
 	private Long codigo;
 	private String nome;
+	
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy HH:mm:ss", timezone="GMT-3")
 	private Date publicacao;
 	private String editora;
 	private String resumo;
