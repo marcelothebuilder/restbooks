@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import io.github.marcelothebuilder.restbooks.domain.Comentario;
 import io.github.marcelothebuilder.restbooks.domain.Livro;
 import io.github.marcelothebuilder.restbooks.service.LivrosService;
 import io.github.marcelothebuilder.restbooks.service.exceptions.LivroInexistenteException;
@@ -64,6 +65,17 @@ public class LivrosController {
 	public ResponseEntity<Void> deletar(@PathVariable("codigo") Long codigo) throws LivroInexistenteException {
 		livrosService.deletar(codigo);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
+	
+	@RequestMapping(value = "/{id}/comentarios", method = RequestMethod.POST)
+	public ResponseEntity<Void> adicionarComentario(@PathVariable("id") Long codigoLivro,
+			@RequestBody Comentario comentario) throws LivroInexistenteException {
+
+		livrosService.salvarComentario(codigoLivro, comentario);
+
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
+
+		return ResponseEntity.created(uri).build();
 	}
 
 }
