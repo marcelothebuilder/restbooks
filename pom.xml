@@ -161,17 +161,25 @@
 								<password>${spring.datasource.password}</password>
 							</jdbc>
 							<generator>
+								<strategy>
+									<name>io.github.marcelothebuilder.restbooks.jooqconfig.CodeGenerationStrategy</name>
+								</strategy>
 								<database>
 									<name>org.jooq.util.h2.H2Database</name>
 									<includes>.*</includes>
 									<excludes></excludes>
-									<dateAsTimestamp>true</dateAsTimestamp>
+									<dateAsTimestamp>false</dateAsTimestamp>
 									<inputSchema>PUBLIC</inputSchema>
 								</database>
 								<generate>
+									<relations>true</relations>
 									<deprecated>false</deprecated>
 									<instanceFields>true</instanceFields>
-									<pojos>true</pojos>
+									<pojos>false</pojos>
+									<daos>false</daos>
+									<interfaces>false</interfaces>
+									<generatedAnnotation>false</generatedAnnotation>
+									<validationAnnotations>false</validationAnnotations>
 								</generate>
 								<target>
 									<packageName>io.github.marcelothebuilder.restbooks.jooq</packageName>

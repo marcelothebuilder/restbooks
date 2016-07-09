@@ -1,35 +1,22 @@
-package io.github.marcelothebuilder.restbooks.domain;
+package io.github.marcelothebuilder.restbooks.model;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 
-/**
- * @author Marcelo Paixao Resende
- *
- */
-public @Data class Comentario {
+@Data
+public class Comentario {
 	private Long codigo;
-	private Long codigoLivro;
 	private String autor;
 	private String conteudo;
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy HH:mm:ss", timezone="GMT-3")
 	private Date data;
-	
-	@JsonIgnore
 	private Livro livro;
-	
-	/**
-	 * Verifica se o Comentario tem um código.
-	 * @return true caso <tt>codigo</tt> seja true.
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
-	public boolean hasCodigo() {
-		return codigo != null;
-	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -46,7 +33,12 @@ public @Data class Comentario {
 			return false;
 		return true;
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -54,4 +46,13 @@ public @Data class Comentario {
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
 		return result;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Comentario [codigo=" + codigo + ", autor=" + autor + ", conteudo=" + conteudo + ", data=" + data + "]";
+	}
+
 }
