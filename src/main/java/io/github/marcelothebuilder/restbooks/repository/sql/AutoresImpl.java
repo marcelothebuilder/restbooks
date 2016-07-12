@@ -19,6 +19,11 @@ public class AutoresImpl extends JooqRepository implements Autores {
 		return selectAutores().fetchInto(Autor.class);
 	}
 	
+	@Override
+	public Autor buscar(Long codigo) {
+		return selectAutores().where(AUTOR.CODIGO.eq(codigo)).fetchOneInto(Autor.class);
+	}
+
 	private SelectWhereStep<AutorRecord> selectAutores() {
 		return dsl().selectFrom(AUTOR);
 	}
@@ -31,5 +36,7 @@ public class AutoresImpl extends JooqRepository implements Autores {
 		autorRecord.store();
 		return autorRecord.into(Autor.class);
 	}
+
+	
 
 }
