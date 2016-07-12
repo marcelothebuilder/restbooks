@@ -68,7 +68,12 @@
 			<groupId>org.jooq</groupId>
 			<artifactId>jooq-codegen</artifactId>
 		</dependency>
-
+		
+		<!-- jackson xml -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+		</dependency>
 
 	</dependencies>
 
