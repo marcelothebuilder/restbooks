@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import org.jooq.DSLContext;
 import org.jooq.JoinType;
 import org.jooq.Record;
+import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -36,46 +37,15 @@ public class LivrosImpl implements Livros {
 
 	@Override
 	public List<Livro> todos() {
-		
-		Function<Record, Livro> recordToLivro = r -> {			
-			LivroRecord livroRecord = r.into(LIVRO.fields()).into(LivroRecord.class);
-			AutorRecord autorRecord = r.into(AUTOR.fields()).into(AutorRecord.class);
-			
-			Livro livro = PojoUtils.copyProperties(livroRecord, Livro.class);
-			livro.setPublicacao(livroRecord.getPublicacao());
-			
-			Autor autor = PojoUtils.copyProperties(autorRecord, Autor.class);
-			autor.setNascimento(autorRecord.getNascimento());
-			
-			return livro;
-		};
-		
-		Function<Record, Comentario> recordToComentario = r -> {
-			ComentarioRecord comentarioRecord = r.into(COMENTARIO.fields()).into(ComentarioRecord.class);
-			
-			Comentario comentario = PojoUtils.copyProperties(comentarioRecord, Comentario.class);
-			
-			comentario.setData(DateUtils.toDate(comentarioRecord.getData()));
-			
-			return comentario;
-		};
-		
-		Set<Livro> set = this.dsl.select(LIVRO.fields())
-				.select(COMENTARIO.fields())
-				.select(AUTOR.fields())
-				.from(LIVRO)
-				.join(COMENTARIO, JoinType.LEFT_OUTER_JOIN)
-					.onKey()
-				.join(AUTOR, JoinType.LEFT_OUTER_JOIN)
-					.onKey()
+		Set<Livro> set = selectLivros()
 				.fetch()
 				.stream()
 				.collect(
 					Collectors.groupingBy(
-						recordToLivro,
+						this.recordToLivro(),
 						LinkedHashMap::new,
 						Collectors.mapping(
-							recordToComentario, 
+							this.recordToComentario(), 
 							Collectors.toSet()
 						)
 					)
@@ -108,49 +78,16 @@ public class LivrosImpl implements Livros {
 
 	@Override
 	public Livro buscar(Long codigo) {
-		
-		// copy/paste do todos() por preguiça
-		
-		Function<Record, Livro> recordToLivro = r -> {			
-			LivroRecord livroRecord = r.into(LIVRO.fields()).into(LivroRecord.class);
-			AutorRecord autorRecord = r.into(AUTOR.fields()).into(AutorRecord.class);
-			
-			Livro livro = PojoUtils.copyProperties(livroRecord, Livro.class);
-			livro.setPublicacao(livroRecord.getPublicacao());
-			
-			Autor autor = PojoUtils.copyProperties(autorRecord, Autor.class);
-			autor.setNascimento(autorRecord.getNascimento());
-			
-			return livro;
-		};
-		
-		Function<Record, Comentario> recordToComentario = r -> {
-			ComentarioRecord comentarioRecord = r.into(COMENTARIO.fields()).into(ComentarioRecord.class);
-			
-			Comentario comentario = PojoUtils.copyProperties(comentarioRecord, Comentario.class);
-			
-			comentario.setData(DateUtils.toDate(comentarioRecord.getData()));
-			
-			return comentario;
-		};
-		
-		Set<Livro> set = this.dsl.select(LIVRO.fields())
-				.select(COMENTARIO.fields())
-				.select(AUTOR.fields())
-				.from(LIVRO)
-				.join(COMENTARIO, JoinType.LEFT_OUTER_JOIN)
-					.onKey()
-				.join(AUTOR, JoinType.LEFT_OUTER_JOIN)
-					.onKey()
+		Set<Livro> set = selectLivros()
 				.where(LIVRO.CODIGO.eq(codigo))
 				.fetch()
 				.stream()
 				.collect(
 					Collectors.groupingBy(
-						recordToLivro,
+						this.recordToLivro(),
 						LinkedHashMap::new,
 						Collectors.mapping(
-							recordToComentario, 
+							this.recordToComentario(), 
 							Collectors.toSet()
 						)
 					)
@@ -174,6 +111,41 @@ public class LivrosImpl implements Livros {
 		dsl.deleteFrom(LIVRO).where(LIVRO.CODIGO.eq(codigo));
 	}
 	
+	private SelectWhereStep<Record> selectLivros() {
+		return this.dsl.select(LIVRO.fields())
+				.select(COMENTARIO.fields())
+				.select(AUTOR.fields())
+				.from(LIVRO)
+				.join(COMENTARIO, JoinType.LEFT_OUTER_JOIN)
+					.onKey()
+				.join(AUTOR, JoinType.LEFT_OUTER_JOIN)
+					.onKey();
+	}
 	
+	private Function<Record, Livro> recordToLivro() {
+		return r -> {			
+			LivroRecord livroRecord = r.into(LIVRO.fields()).into(LivroRecord.class);
+			AutorRecord autorRecord = r.into(AUTOR.fields()).into(AutorRecord.class);
+			
+			Livro livro = PojoUtils.copyProperties(livroRecord, Livro.class);
+			livro.setPublicacao(livroRecord.getPublicacao());
+			
+			Autor autor = PojoUtils.copyProperties(autorRecord, Autor.class);
+			autor.setNascimento(autorRecord.getNascimento());
+			
+			return livro;
+		};
+	}
 	
+	private Function<Record, Comentario> recordToComentario() {
+		return r -> {
+			ComentarioRecord comentarioRecord = r.into(COMENTARIO.fields()).into(ComentarioRecord.class);
+			
+			Comentario comentario = PojoUtils.copyProperties(comentarioRecord, Comentario.class);
+			
+			comentario.setData(DateUtils.toDate(comentarioRecord.getData()));
+			
+			return comentario;
+		};
+	}
 }
