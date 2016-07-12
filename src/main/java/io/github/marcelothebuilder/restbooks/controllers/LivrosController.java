@@ -3,6 +3,8 @@ package io.github.marcelothebuilder.restbooks.controllers;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +42,7 @@ public class LivrosController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Void> salvar(@RequestBody LivroDTO livro) {
+	public ResponseEntity<Void> salvar(@Valid @RequestBody LivroDTO livro) {
 		LivroDTO livroCriado = livrosService.salvar(livro);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(livroCriado.getCodigo())
 				.toUri();
@@ -48,7 +50,7 @@ public class LivrosController {
 	}
 
 	@RequestMapping(value = "/{codigo}", method = RequestMethod.PUT)
-	public ResponseEntity<Void> atualizar(@RequestBody LivroDTO livro, @PathVariable("codigo") Long codigo)
+	public ResponseEntity<Void> atualizar(@Valid @RequestBody LivroDTO livro, @PathVariable("codigo") Long codigo)
 			throws LivroInexistenteException {
 		livro.setCodigo(codigo);
 		livrosService.atualizar(livro);

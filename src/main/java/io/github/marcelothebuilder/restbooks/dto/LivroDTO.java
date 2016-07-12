@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -15,6 +17,8 @@ import lombok.Data;
 @Data
 public class LivroDTO {
 	private Long codigo;
+	
+	@NotEmpty(message="O nome não pode ser nulo")
 	private String nome;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = JsonDateFormat.DATE_ONLY, timezone = "GMT-3")
