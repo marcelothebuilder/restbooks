@@ -1,6 +1,6 @@
 package io.github.marcelothebuilder.restbooks.service.exceptions;
 
-public class AutorInexistenteException extends Exception {
+public class AutorInexistenteException extends InexistenteException {
 	private static final long serialVersionUID = 1L;
 
 	public AutorInexistenteException() {

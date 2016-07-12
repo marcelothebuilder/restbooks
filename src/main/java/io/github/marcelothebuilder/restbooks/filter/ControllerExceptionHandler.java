@@ -7,18 +7,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import io.github.marcelothebuilder.restbooks.service.exceptions.AutorInexistenteException;
-import io.github.marcelothebuilder.restbooks.service.exceptions.LivroInexistenteException;
+import io.github.marcelothebuilder.restbooks.dto.InexistenteErrorDTO;
+import io.github.marcelothebuilder.restbooks.service.exceptions.InexistenteException;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
-	@ExceptionHandler(LivroInexistenteException.class)
-	public ResponseEntity<Void> handleLivroInexistenteException(LivroInexistenteException e, HttpServletRequest request) {
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-	}
-	
-	@ExceptionHandler(AutorInexistenteException.class)
-	public ResponseEntity<Void> handleAutorInexistenteException(AutorInexistenteException e, HttpServletRequest request) {
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	@ExceptionHandler(InexistenteException.class)
+	public ResponseEntity<InexistenteErrorDTO> handleRegistroInexistenteException(InexistenteException e, HttpServletRequest request) {
+		InexistenteErrorDTO inexistenteErrorDTO = new InexistenteErrorDTO();
+		inexistenteErrorDTO.setMensagem(e.getMessage());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(inexistenteErrorDTO);
 	}
 }
