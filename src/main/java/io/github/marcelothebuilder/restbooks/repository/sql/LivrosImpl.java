@@ -133,6 +133,8 @@ public class LivrosImpl implements Livros {
 			Autor autor = PojoUtils.copyProperties(autorRecord, Autor.class);
 			autor.setNascimento(autorRecord.getNascimento());
 			
+			livro.setAutor(autor);
+			
 			return livro;
 		};
 	}
