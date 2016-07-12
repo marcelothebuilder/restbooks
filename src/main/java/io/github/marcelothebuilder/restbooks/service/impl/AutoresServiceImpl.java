@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.github.marcelothebuilder.restbooks.dto.AutorDTO;
+import io.github.marcelothebuilder.restbooks.model.Autor;
 import io.github.marcelothebuilder.restbooks.repository.Autores;
 import io.github.marcelothebuilder.restbooks.service.AbstractAutoresService;
 
@@ -21,6 +22,13 @@ public class AutoresServiceImpl extends AbstractAutoresService {
 		return autores.todos().stream()
 			.map(AutoresServiceImpl::toDto)
 			.collect(Collectors.toList());
+	}
+
+	@Override
+	public AutorDTO salvar(AutorDTO autorDTO) {
+		autorDTO.setCodigo(null);
+		Autor autor = autores.salvar(fromDto(autorDTO));
+		return toDto(autor);
 	}
 
 }

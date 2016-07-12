@@ -23,4 +23,13 @@ public class AutoresImpl extends JooqRepository implements Autores {
 		return dsl().selectFrom(AUTOR);
 	}
 
+	@Override
+	public Autor salvar(Autor autor) {
+		AutorRecord autorRecord = new AutorRecord();
+		autorRecord.from(autor);
+		dsl().attach(autorRecord);
+		autorRecord.store();
+		return autorRecord.into(Autor.class);
+	}
+
 }
