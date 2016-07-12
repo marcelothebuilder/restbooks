@@ -11,11 +11,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.jooq.DSLContext;
 import org.jooq.JoinType;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import io.github.marcelothebuilder.restbooks.jooq.tables.records.AutorRecord;
@@ -30,11 +28,7 @@ import io.github.marcelothebuilder.restbooks.util.PojoUtils;
 import io.github.marcelothebuilder.restbooks.util.PojoUtils.CopyStrictness;
 
 @Repository
-public class LivrosImpl implements Livros {
-
-	@Autowired
-	private DSLContext dsl;
-
+public class LivrosImpl extends JooqRepository implements Livros {
 	@Override
 	public List<Livro> todos() {
 		Set<Livro> set = selectLivros()
@@ -69,7 +63,7 @@ public class LivrosImpl implements Livros {
 	public Livro salvar(Livro livro) {
 		LivroRecord record = PojoUtils.copyProperties(livro, LivroRecord.class, CopyStrictness.LOOSE_DATETIME);
 		
-		dsl.attach(record);
+		dsl().attach(record);
 		
 		record.store();
 		
@@ -108,11 +102,11 @@ public class LivrosImpl implements Livros {
 
 	@Override
 	public void deletar(Long codigo) {
-		dsl.deleteFrom(LIVRO).where(LIVRO.CODIGO.eq(codigo));
+		dsl().deleteFrom(LIVRO).where(LIVRO.CODIGO.eq(codigo));
 	}
 	
 	private SelectWhereStep<Record> selectLivros() {
-		return this.dsl.select(LIVRO.fields())
+		return this.dsl().select(LIVRO.fields())
 				.select(COMENTARIO.fields())
 				.select(AUTOR.fields())
 				.from(LIVRO)
