@@ -2,10 +2,12 @@ package io.github.marcelothebuilder.restbooks.controllers;
 
 import java.net.URI;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -64,7 +66,10 @@ public class LivrosController {
 	@RequestMapping(value = "/{codigo}", method = RequestMethod.GET)
 	public ResponseEntity<LivroDTO> buscar(@PathVariable("codigo") Long codigo) throws LivroInexistenteException {
 		LivroDTO livro = livrosService.buscar(codigo);
-		return ResponseEntity.status(HttpStatus.OK).body(livro);
+		
+		CacheControl cacheControl = CacheControl.maxAge(5, TimeUnit.MINUTES);
+		
+		return ResponseEntity.status(HttpStatus.OK).cacheControl(cacheControl).body(livro);
 	}
 
 	@RequestMapping(value = "/{codigo}", method = RequestMethod.DELETE)
