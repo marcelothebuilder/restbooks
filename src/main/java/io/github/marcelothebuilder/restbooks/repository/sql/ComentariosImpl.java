@@ -18,8 +18,11 @@ public class ComentariosImpl extends JooqRepository implements Comentarios {
 	@Override
 	public Comentario salvar(Comentario comentario) {
 		ComentarioRecord record = PojoUtils.copyProperties(comentario, ComentarioRecord.class, CopyStrictness.LOOSE_DATETIME);
+		record.setCodigoLivro(comentario.getLivro().getCodigo());
+		
 		dsl().attach(record);
 		record.store();
+		
 		return PojoUtils.copyProperties(record, Comentario.class, CopyStrictness.LOOSE_DATETIME);
 	}
 

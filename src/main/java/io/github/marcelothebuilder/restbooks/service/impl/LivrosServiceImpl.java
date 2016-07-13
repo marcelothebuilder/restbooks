@@ -1,5 +1,6 @@
 package io.github.marcelothebuilder.restbooks.service.impl;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -17,6 +18,7 @@ import io.github.marcelothebuilder.restbooks.model.Livro;
 import io.github.marcelothebuilder.restbooks.repository.Comentarios;
 import io.github.marcelothebuilder.restbooks.repository.Livros;
 import io.github.marcelothebuilder.restbooks.service.AbstractLivrosService;
+import io.github.marcelothebuilder.restbooks.service.AutenticacaoService;
 import io.github.marcelothebuilder.restbooks.service.exceptions.LivroInexistenteException;
 import io.github.marcelothebuilder.restbooks.util.PojoUtils;
 
@@ -28,6 +30,9 @@ public class LivrosServiceImpl extends AbstractLivrosService {
 	
 	@Autowired
 	private Comentarios comentarios;
+	
+	@Autowired
+	private AutenticacaoService autenticacaoService;
 	
 	@Override
 	public List<LivroDTO> listar() {
@@ -85,12 +90,25 @@ public class LivrosServiceImpl extends AbstractLivrosService {
 	}
 	
 	@Override
-	public ComentarioDTO salvarComentario(Long codigoLivro, ComentarioDTO comentario) throws LivroInexistenteException {
-		if (!this.verificarExistencia(codigoLivro)) {
-			throw new LivroInexistenteException(String.format("Livro de código %d não existe", codigoLivro));
+	public ComentarioDTO salvarComentario(Long codigoLivro, ComentarioDTO comentarioDTO) throws LivroInexistenteException {
+		
+		LivroDTO livroDTO = this.buscar(codigoLivro);
+		
+		comentarioDTO.setLivro(livroDTO);
+		comentarioDTO.setAutor(autenticacaoService.getNomeUsuario());
+		
+		if (comentarioDTO.getData() == null) {
+			comentarioDTO.setData(Calendar.getInstance().getTime());
 		}
 		
-		return comentarioToDto(comentarios.salvar(comentarioFromDto(comentario)));
+		Comentario comentario = comentarioFromDto(comentarioDTO);
+		
+		Livro livro = new Livro();
+		livro.setCodigo(livroDTO.getCodigo());
+		
+		comentario.setLivro(livro);
+		
+		return comentarioToDto(comentarios.salvar(comentario));
 	}
 
 	@Override
