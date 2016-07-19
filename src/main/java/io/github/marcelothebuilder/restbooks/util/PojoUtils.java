@@ -21,13 +21,7 @@ public class PojoUtils {
 		
 		Class<?> sourceClass = source.getClass();
 
-		T dst;
-		
-		try {
-			dst = (T) destinationClass.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			throw new RuntimeException("Error while transfering data", e);
-		}
+		T dst = createClassInstance(destinationClass);
 		
 		List<Method> getters = getGetterMethods(sourceClass);
 		
@@ -84,6 +78,14 @@ public class PojoUtils {
 		return dst;
 	}
 	
+	private static <T> T createClassInstance(Class<T> destinationClass) {
+		try {
+			return (T) destinationClass.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			throw new RuntimeException("Error while transfering data", e);
+		}
+	}
+
 	private static List<Method> getGetterMethods(Class<?> sourceClass) {
 		return Arrays.stream(sourceClass.getDeclaredMethods())
 			.filter(method -> method.getParameterTypes().length == 0) // getters não podem ter parametros
