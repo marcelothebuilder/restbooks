@@ -1,8 +1,10 @@
 package io.github.marcelothebuilder.restbooks.util;
 
 import java.lang.reflect.Method;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,58 +28,69 @@ public class PojoUtils {
 		List<Method> getters = getGetterMethods(sourceClass);
 		
 		getters.forEach(getter -> {
-			String property = getter.getName().substring(3);
+			String setterName = getSetterNameFromGetter(getter);
+			
 			Class<?> propertyType = getter.getReturnType();
-			String setterName = String.format("set%s", property);
 			
 			// procura um método setter na classe de destino
 			// que tenha como unico parametro do tipo propertyType
 			Method setter = ReflectionUtils.findMethod(destinationClass, setterName, propertyType);
-			
-			
-			try {
-				// encontrado
-				if (setter != null) {
-					setter.invoke(dst, getter.invoke(source));
-				// busca métodos alternativos que sabemos converter
-				} else if (strictness == CopyStrictness.LOOSE_DATETIME) {
+						
+			// encontrado
+			if (setter != null) {
+				setPropertyValue(dst, setter, getPropertyValue(source, getter));
+			// busca métodos alternativos que sabemos converter
+			} else if (strictness == CopyStrictness.LOOSE_DATETIME) {
+				
+				if (java.util.Date.class.equals(propertyType)) {
+					setter = ReflectionUtils.findMethod(destinationClass, setterName, java.sql.Timestamp.class);
 					
-					if (java.util.Date.class.equals(propertyType)) {
-						setter = ReflectionUtils.findMethod(destinationClass, setterName, java.sql.Timestamp.class);
+					// encontrado?
+					if (setter != null) {
+						// o setter é para Timestamp
+						java.sql.Timestamp timestampValue = DateUtils.toTimestamp((Date) getPropertyValue(source, getter));
 						
-						// encontrado?
-						if (setter != null) {
-							java.util.Date getterDate = (java.util.Date) getter.invoke(source);
-							
-							// o setter é para Timestamp
-							java.sql.Timestamp timestampValue = DateUtils.toTimestamp(getterDate);
-							
-							// invoca o setter de timestamp
-							setter.invoke(dst, timestampValue);
-						}
-					} else if (java.sql.Timestamp.class.equals(propertyType)) {
-						setter = ReflectionUtils.findMethod(destinationClass, setterName, java.sql.Timestamp.class);
+						setPropertyValue(dst, setter, timestampValue);
+					}
+				} else if (java.sql.Timestamp.class.equals(propertyType)) {
+					setter = ReflectionUtils.findMethod(destinationClass, setterName, java.sql.Timestamp.class);
+					
+					// encontrado?
+					if (setter != null) {
+						// o setter é para Date
+						java.util.Date dateValue = DateUtils.toDate((Timestamp) getPropertyValue(source, getter));
 						
-						// encontrado?
-						if (setter != null) {
-							java.sql.Timestamp getterTimestamp = (java.sql.Timestamp) getter.invoke(source);
-							
-							// o setter é para Date
-							java.util.Date dateValue = DateUtils.toDate(getterTimestamp);
-							
-							// invoca o setter de date
-							setter.invoke(dst, dateValue);
-						}
+						setPropertyValue(dst, setter, dateValue);
 					}
 				}
-			} catch (Exception e) {
-				throw new RuntimeException("Error while transfering data", e);
-			}				
+			}			
 		});
 
 		return dst;
 	}
-	
+
+	private static <T> void setPropertyValue(T dst, Method setter, Object propertyValue) {
+		try {
+			setter.invoke(dst, propertyValue);
+		} catch (Exception e) {
+			throw new RuntimeException("Error while transfering data", e);
+		}
+	}
+
+	private static <D> Object getPropertyValue(D source, Method getter) {
+		try {
+			return getter.invoke(source);
+		} catch (Exception e) {
+			throw new RuntimeException("Error while transfering data", e);
+		}
+	}
+
+	private static String getSetterNameFromGetter(Method getter) {
+		String property = getter.getName().substring(3);
+		String setterName = String.format("set%s", property);
+		return setterName;
+	}
+
 	private static <T> T createClassInstance(Class<T> destinationClass) {
 		try {
 			return (T) destinationClass.newInstance();
