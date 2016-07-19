@@ -29,11 +29,7 @@ public class PojoUtils {
 			throw new RuntimeException("Error while transfering data", e);
 		}
 		
-		List<Method> getters = Arrays.stream(sourceClass.getDeclaredMethods())
-				.filter(method -> method.getParameterTypes().length == 0) // getters não podem ter parametros
-				.filter(method -> method.getName().startsWith("get")) // devem começar com "get"
-				.filter(method -> !Collection.class.isAssignableFrom(method.getReturnType())) // não queremos getters que retornam collections
-				.collect(Collectors.toList());
+		List<Method> getters = getGetterMethods(sourceClass);
 		
 		getters.forEach(getter -> {
 			String property = getter.getName().substring(3);
@@ -88,6 +84,14 @@ public class PojoUtils {
 		return dst;
 	}
 	
+	private static List<Method> getGetterMethods(Class<?> sourceClass) {
+		return Arrays.stream(sourceClass.getDeclaredMethods())
+			.filter(method -> method.getParameterTypes().length == 0) // getters não podem ter parametros
+			.filter(method -> method.getName().startsWith("get")) // devem começar com "get"
+			.filter(method -> !Collection.class.isAssignableFrom(method.getReturnType())) // não queremos getters que retornam collections
+			.collect(Collectors.toList());
+	}
+
 	public enum CopyStrictness {
 		STRICT,
 		LOOSE_DATETIME;
