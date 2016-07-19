@@ -56,7 +56,7 @@ public class PojoUtils {
 						
 						// encontrado?
 						if (setter != null) {
-							setPropertyValue(dst, setter, (java.sql.Date) getPropertyValue(source, getter));
+							setPropertyValue(dst, setter, DateUtils.toSqlDate((Date) getPropertyValue(source, getter)));
 						}
 					}
 				} else if (java.sql.Timestamp.class.equals(propertyType)) {
