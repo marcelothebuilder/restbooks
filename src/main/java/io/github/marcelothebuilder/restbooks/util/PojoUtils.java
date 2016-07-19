@@ -41,9 +41,8 @@ public class PojoUtils {
 				setPropertyValue(dst, setter, getPropertyValue(source, getter));
 			// busca métodos alternativos que sabemos converter
 			} else if (strictness == CopyStrictness.LOOSE_DATETIME) {
-				
 				if (java.util.Date.class.equals(propertyType)) {
-					setter = ReflectionUtils.findMethod(destinationClass, setterName, java.sql.Timestamp.class);
+					setter = findTimestampSetter(destinationClass, setterName);
 					
 					// encontrado?
 					if (setter != null) {
@@ -51,6 +50,14 @@ public class PojoUtils {
 						java.sql.Timestamp timestampValue = DateUtils.toTimestamp((Date) getPropertyValue(source, getter));
 						
 						setPropertyValue(dst, setter, timestampValue);
+					} else {
+						// procura setter de sqlDate
+						setter = findSqlDateSetter(destinationClass, setterName);
+						
+						// encontrado?
+						if (setter != null) {
+							setPropertyValue(dst, setter, (java.sql.Date) getPropertyValue(source, getter));
+						}
 					}
 				} else if (java.sql.Timestamp.class.equals(propertyType)) {
 					setter = ReflectionUtils.findMethod(destinationClass, setterName, java.sql.Timestamp.class);
@@ -67,6 +74,14 @@ public class PojoUtils {
 		});
 
 		return dst;
+	}
+
+	private static <T> Method findSqlDateSetter(Class<T> destinationClass, String setterName) {
+		return ReflectionUtils.findMethod(destinationClass, setterName, java.sql.Date.class);
+	}
+
+	private static <T> Method findTimestampSetter(Class<T> destinationClass, String setterName) {
+		return ReflectionUtils.findMethod(destinationClass, setterName, java.sql.Timestamp.class);
 	}
 
 	private static <T> void setPropertyValue(T dst, Method setter, Object propertyValue) {
