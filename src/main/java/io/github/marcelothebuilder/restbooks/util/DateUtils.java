@@ -17,4 +17,11 @@ public class DateUtils {
 		}
 		return new Timestamp(date.getTime());
 	}
+	
+	public static java.sql.Date toSqlDate(Date date) {
+		if (date == null) {
+			return null;
+		}
+		return new java.sql.Date(date.getTime());
+	}
 }
