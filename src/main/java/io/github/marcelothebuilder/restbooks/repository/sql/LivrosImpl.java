@@ -62,6 +62,7 @@ public class LivrosImpl extends JooqRepository implements Livros {
 	@Override
 	public Livro salvar(Livro livro) {
 		LivroRecord record = PojoUtils.copyProperties(livro, LivroRecord.class, CopyStrictness.LOOSE_DATETIME);
+		record.setCodigoAutor(livro.getAutor().getCodigo());
 		
 		dsl().attach(record);
 		
