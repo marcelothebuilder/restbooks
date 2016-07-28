@@ -49,14 +49,18 @@ public class LivrosImpl extends JooqRepository implements Livros {
 				.map(e -> {
 					Livro livro = e.getKey();
 					Set<Comentario> comentarios = e.getValue();
-					comentarios.stream().forEach(c -> c.setLivro(livro));
-					livro.setComentarios(comentarios);
+					comentarios.forEach(c -> c.setLivro(livro));
+					livro.setComentarios(getApenasComentariosNaoNulos(comentarios));
 					return livro;
 				})
 				.collect(Collectors.toSet());
 				
 		return new LinkedList<>(set);
 
+	}
+
+	private Set<Comentario> getApenasComentariosNaoNulos(Set<Comentario> comentarios) {
+		return comentarios.stream().filter(c -> c.getCodigo() != null).collect(Collectors.toSet());
 	}
 
 	@Override
@@ -93,7 +97,7 @@ public class LivrosImpl extends JooqRepository implements Livros {
 					Livro livro = e.getKey();
 					Set<Comentario> comentarios = e.getValue();
 					comentarios.stream().forEach(c -> c.setLivro(livro));
-					livro.setComentarios(comentarios);
+					livro.setComentarios(getApenasComentariosNaoNulos(comentarios));
 					return livro;
 				})
 				.collect(Collectors.toSet());
